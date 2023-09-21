@@ -1,0 +1,153 @@
+---
+title: "Data Manipulation"
+author: "Lauren Lazaro"
+date: "2023-09-21"
+output: github_document
+---
+
+```{r}
+library(tidyverse)
+```
+
+
+Import FAS litters and pups 
+
+```{r}
+litters_df = 
+  read_csv("data/FAS_litters.csv")
+litters_df = janitor::clean_names(litters_df)
+
+pups_df = 
+  read_csv("data/FAS_pups.csv")
+pups_df = janitor::clean_names(pups_df)
+```
+
+## `select`
+
+`select` is used to select columns 
+
+```{r}
+select(litters_df, group, litter_number, gd0_weight)
+
+select(litters_df, gd0_weight, group)
+
+##above output only the columns that you select 
+
+select(litters_df, group, gd0_weight:gd_of_birth)
+
+##above call shows the columbs from gd0_weight to gd_of_birth
+
+select(litters_df, group, starts_with("pups"))
+
+##above will output every columbs that starts w pups 
+
+select(litters_df, -litter_number)
+
+select(litters_df, -starts_with("gd"))
+##above removes a specific column 
+
+select(litters_df, group, litter_id = litter_number, everything())
+
+##keeps everything ... get the rest of this
+```
+
+
+`select` vs `pull`
+
+```{r}
+select(litters_df, group)
+# will always give you a df and doesn't care that there's just one column 
+
+pull(litters_df, group)
+# creates a vector and doesn't exist in the df anymore
+# if you need to get something out of a df, use pull (instead of $)
+```
+
+ 
+
+```{r}
+rename(litters_df, litter_id = litter_number)
+
+##above is a shorthand for renmaing the variable and keeping everything
+
+relocate(litters_df, )
+```
+
+
+#pups 
+```{r}
+pups_cols = select(pups_df, litter_number, sex, pd_ears)
+pups_cols
+```
+
+
+## `filter`
+
+get rid of rows using `filter()`
+fitlering is usually based on something that is in your df. given something inside the df, 
+construct something that says keep this or don't keep this 
+
+```{r}
+filter(litters_df, group == "Con7")
+
+## above: keep everywhere where the value is equal to Con7
+# == means check to see if this is true 
+
+filter(litters_df, group != "Con7")
+
+## aboce: keep everything that is not equal to Con7
+
+filter(litters_df, gd0_weight > 20)
+
+## keep the mothers w a gd weight of greater than 20
+
+filter(litters_df, gd0_weight <= 20)
+
+# less than or equal to 
+
+filter(litters_df, group == "Con7" | group == "Con8")
+
+## above keeps both con7 and con8. the veritcal bar means "or" so keep the value if it
+## is equal to either con7 or con8
+
+filter(litters_df, group %in% c("Con7", "Con8"))
+
+## easier way to say keep things equal to both con7 and con8
+
+filter(litters_df, !(group == "Con7"))
+
+## keep everything not equal to con7
+
+filter(litters_df, group %in% c("Con7", "Con8"), gd0_weight > 20)
+
+## groups together multiple conditions
+```
+
+## `mutate`
+
+this is used to add or change variables 
+
+```{r}
+mutate(litters_df, wt_gain = gd18_weight - gd0_weight)
+
+## creates new variable from things that exist already in our df 
+## uses the gd 18 weight and gd 0 weight to calculate total weight gain 
+
+mutate(litters_df, group = str_to_lower(group))
+
+mutate(
+  litters_df, 
+  wt_gain = gd18_weight - gd0_weight, 
+  group = str_to_lower(group)
+)
+
+```
+
+missing rows 
+```{r}
+drop_na(litters_df)
+# drops all na
+drop_na(litters_df, gd0_weight)
+#drops na only in gd0_weight column
+```
+

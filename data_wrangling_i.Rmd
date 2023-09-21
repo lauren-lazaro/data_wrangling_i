@@ -1,0 +1,121 @@
+---
+title: "data_wrangling_i"
+output: html_document
+date: "2023-09-19"
+---
+
+---
+title: "Data Wrangling"
+output: github_document
+---
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(haven)
+```
+
+Let's import `the FAS_litters.csv` csv using a relative path. 
+
+```{r}
+litters_df = 
+  read_csv("data/FAS_litters.csv") #path name come from the "data" folder that we created in the repo folder on deskstop, that's why we put it there
+
+litters_df = 
+  janitor::clean_names(litters_df)   #replaces the df with updated version. we could load the library called "janitor", but we dont need allll the functions so we are just calling clean_names by using the :: notation
+```
+
+---
+title: "Data Wranling document"
+output: github_document
+---
+
+```{r}
+library(tidyverse)
+```
+
+Let's import `the FAS_litters.csv` csv using a relative path. 
+
+```{r}
+litters_df = 
+  read_csv("data/FAS_litters.csv") #path name come from the "data" folder that we created in the repo folder on deskstop, that's why we put it there
+
+litters_df = 
+  janitor::clean_names(litters_df)   #replaces the df with updated version. we could load the library called "janitor", but we dont need allll the functions so we are just calling clean_names by using the :: notation
+```
+
+Import the same dataset using an absolute path 
+# watch lecture on this
+
+
+look at data summary
+```{r}
+str(litters_df)
+```
+
+# Options in `read_*`
+
+```{r}
+litters_df = 
+  read_csv("data/FAS_litters.csv" , skip = 10 , col_names = FALSE) #makes up column names but...
+```
+
+Look at NA values
+
+```{r}
+litters_df = 
+  read_csv(
+    "data/FAS_litters.csv" ,
+    na = c("NA", 19)) #anywhere that NA or 19 show up, it is treated like a missing value
+```
+
+
+Column types 
+
+```{r}
+litters_df = 
+  read_csv("data/FAS_litters.csv" , 
+           col_types = 
+             cols(
+               #FIND CODE FOR THIS
+             )) #list column and what it's supposed to be
+
+```
+
+
+## Other file types 
+
+Import a clsc file first
+
+```{r}
+mlb_df = 
+  read_excel("data/mlb11.xlsx")
+```
+
+Import SAS file 
+```{r}
+pulse_df = 
+  read_sas("data/public_pulse_data.sas7bdat")
+```
+
+## Base r
+
+```{r, eval = FALSE}
+litters_df = 
+  read.csv("data/FAS_litters.csv")
+
+litters_df$Gr #DONT do this
+```
+
+## Export data
+
+
+```{r}
+litters_df_cleaned = 
+  read_csv("data/FAS_litters.csv")
+
+litters_df_cleaned =
+  janitor::clean_names(litters_df_cleaned)
+
+write_csv(litters_df_cleaned, "data/litters_cleaned.csv")
+```
