@@ -151,3 +151,10 @@ drop_na(litters_df, gd0_weight)
 #drops na only in gd0_weight column
 ```
 
+
+## `arrange`
+
+```{r}
+arrange(litters_df, gd0_weight)
+arrange(litters_df, group, gd0_weight)
+```
